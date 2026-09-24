@@ -1,0 +1,13 @@
+# dependencies / builds
+node_modules/
+site/dist/
+
+# raw render output (≈750 MB of PNG frames) — re-create with blender/render_all.sh
+blender/renders/
+# CC0 HDRIs from Poly Haven — re-download with blender/get_hdri.sh
+blender/hdri/
+*.blend1
+
+# local tooling
+.claude/
+.DS_Store

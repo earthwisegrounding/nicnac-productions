@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>NicNac Productions — Hip-Hop &amp; R&amp;B Beats, Songwriting, Mixing</title>
+  <meta name="description" content="NicNac Productions — hip-hop and R&amp;B production, songwriting and mixing. Stream the vault, then book a session." />
+  <meta name="theme-color" content="#050505" />
+  <meta name="color-scheme" content="dark" />
+  <link rel="canonical" href="https://earthwisegrounding.github.io/nicnac-productions/" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="NicNac Productions" />
+  <meta property="og:title" content="NicNac Productions — What the eye sees, the record keeps." />
+  <meta property="og:description" content="Hip-hop &amp; R&amp;B production, songwriting and mixing. Stream the vault and book a session." />
+  <meta property="og:url" content="https://earthwisegrounding.github.io/nicnac-productions/" />
+  <meta property="og:image" content="https://earthwisegrounding.github.io/nicnac-productions/og.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <link rel="manifest" href="site.webmanifest" />
+
+  <link rel="preconnect" href="https://w.soundcloud.com" />
+  <link rel="dns-prefetch" href="https://api-widget.soundcloud.com" />
+
+  <!-- Hero poster is the LCP element; the loop video + WebGL layer paint over it once ready. -->
+  <link rel="preload" as="image" href="media/poster-1920.webp" fetchpriority="high" type="image/webp"
+        imagesrcset="media/poster-portrait.webp 1080w, media/poster-1920.webp 1920w"
+        imagesizes="100vw" media="(orientation: landscape)" />
+  <link rel="preload" as="image" href="media/poster-portrait.webp" fetchpriority="high" type="image/webp" media="(orientation: portrait)" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "MusicGroup",
+    "name": "NicNac Productions",
+    "alternateName": ["NicNac", "SupremeONicNac"],
+    "genre": ["Hip-Hop", "R&B"],
+    "url": "https://nicnacproductions.store/",
+    "image": "https://earthwisegrounding.github.io/nicnac-productions/og.jpg",
+    "sameAs": [
+      "https://soundcloud.com/nicnackproductions",
+      "https://www.instagram.com/supremeonicnac/"
+    ]
+  }
+  </script>
+
+  <style>
+    /* critical: paint black + poster before CSS bundle lands */
+    html,body{background:#050505;color:#ece6da;margin:0}
+    .hero{position:relative;height:100svh;overflow:hidden}
+    .hero__poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  </style>
+  <script type="module" src="/src/main.js"></script>
+</head>
+
+<body>
+  <a class="skip" href="#vault">Skip to the music</a>
+
+  <!-- ============================================================ GATE -->
+  <div class="gate" id="gate" role="dialog" aria-modal="true" aria-label="Enter NicNac Productions">
+    <div class="gate__mark">
+      <svg viewBox="0 0 120 108" class="mark mark--draw" aria-hidden="true">
+        <path class="mark__outer" d="M60 4 L116 102 H4 Z" />
+        <path class="mark__inner" d="M60 30 L93 88 H27 Z" />
+        <path class="mark__almond" d="M30 58 Q60 34 90 58 Q60 82 30 58 Z" />
+        <g class="mark__eye">
+          <circle class="mark__iris" cx="60" cy="58" r="10.5" />
+          <circle class="mark__pupil" cx="60" cy="58" r="4.6" />
+          <circle class="mark__glint" cx="63.4" cy="54.6" r="1.8" />
+        </g>
+      </svg>
+    </div>
+    <p class="gate__count mono"><span data-count>000</span><span class="gate__pct">%</span></p>
+    <div class="gate__actions">
+      <button class="gate__enter" type="button" data-enter="sound" disabled>
+        <span class="gate__enter-ring" aria-hidden="true"></span>
+        <span class="gate__enter-label">Enter</span>
+        <span class="gate__enter-sub mono">with sound</span>
+      </button>
+      <button class="gate__quiet mono" type="button" data-enter="quiet" disabled>enter muted</button>
+    </div>
+    <p class="gate__foot mono">NicNac Productions <span aria-hidden="true">·</span> SupremeONicNac</p>
+  </div>
+
+  <!-- ============================================================ SVG SPRITES -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <defs>
+      <linearGradient id="goldGrad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#f7e2a1" />
+        <stop offset=".45" stop-color="#d4a64a" />
+        <stop offset="1" stop-color="#8a6421" />
+      </linearGradient>
+      <radialGradient id="irisGrad" cx=".5" cy=".5" r=".5">
+        <stop offset="0" stop-color="#8fb0ff" />
+        <stop offset=".55" stop-color="#2f5bff" />
+        <stop offset="1" stop-color="#0a1a7a" />
+      </radialGradient>
+      <symbol id="mark" viewBox="0 0 120 108">
+        <path class="mark__outer" d="M60 4 L116 102 H4 Z" />
+        <path class="mark__inner" d="M60 30 L93 88 H27 Z" />
+        <path class="mark__almond" d="M30 58 Q60 34 90 58 Q60 82 30 58 Z" />
+        <g class="mark__eye">
+          <circle class="mark__iris" cx="60" cy="58" r="10.5" />
+          <circle class="mark__pupil" cx="60" cy="58" r="4.6" />
+          <circle class="mark__glint" cx="63.4" cy="54.6" r="1.8" />
+        </g>
+      </symbol>
+      <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.5v15l13-7.5z" /></symbol>
+      <symbol id="i-pause" viewBox="0 0 24 24"><path d="M6 4h4.5v16H6zM13.5 4H18v16h-4.5z" /></symbol>
+      <symbol id="i-next" viewBox="0 0 24 24"><path d="M5 5v14l10-7zM16 5h3v14h-3z" /></symbol>
+      <symbol id="i-prev" viewBox="0 0 24 24"><path d="M19 5v14L9 12zM5 5h3v14H5z" /></symbol>
+      <symbol id="i-vol" viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4z" /><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /></symbol>
+      <symbol id="i-mute" viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4z" /><path d="M16.5 9.5l5 5m0-5l-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /></symbol>
+      <symbol id="i-expand" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="1.8" /></symbol>
+      <symbol id="i-sc" viewBox="0 0 32 16"><path d="M0 12.2c0 1 .8 1.8 1.8 1.8V10.4c-1 0-1.8.8-1.8 1.8zm3 1.8h1.1V9.2H3zm2.2 0h1.1V8.3H5.2zm2.2 0h1.1V7.6H7.4zm2.2 0h1.1V6.6H9.6zm2.2 0H13V4.7h-1.2zm2.3 0h13.4a4.4 4.4 0 0 0 0-8.8c-.6 0-1.1.1-1.6.3A6.6 6.6 0 0 0 14.1 2z" /></symbol>
+      <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" /></symbol>
+      <symbol id="i-ig" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.8" /><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8" /><circle cx="17.4" cy="6.6" r="1.2" /></symbol>
+    </defs>
+  </svg>
+
+  <!-- ============================================================ NAV -->
+  <header class="nav" id="nav">
+    <a class="nav__brand" href="#top" aria-label="NicNac Productions — back to top">
+      <svg viewBox="0 0 120 108" class="mark mark--nav" aria-hidden="true"><use href="#mark" /></svg>
+      <span class="nav__word">NicNac</span>
+    </a>
+    <nav class="nav__links" aria-label="Primary">
+      <a href="#vault" data-hover="Vault">Vault</a>
+      <a href="#about" data-hover="About">About</a>
+      <a href="#services" data-hover="Services">Services</a>
+    </nav>
+    <a class="nav__cta" href="#book"><span>Book a session</span><svg aria-hidden="true"><use href="#i-arrow" /></svg></a>
+    <button class="nav__burger" type="button" aria-label="Open menu" aria-haspopup="dialog" data-menu-open>
+      <span></span><span></span>
+    </button>
+  </header>
+
+  <dialog class="menu" id="menu" aria-label="Menu">
+    <button class="menu__close" type="button" aria-label="Close menu" data-menu-close><span></span><span></span></button>
+    <nav aria-label="Mobile">
+      <a href="#vault" data-menu-close><span class="mono">01</span>Vault</a>
+      <a href="#about" data-menu-close><span class="mono">02</span>About</a>
+      <a href="#services" data-menu-close><span class="mono">03</span>Services</a>
+      <a href="#book" data-menu-close><span class="mono">04</span>Book</a>
+    </nav>
+    <p class="menu__foot mono"><a href="https://www.instagram.com/supremeonicnac/" rel="noopener" target="_blank">@supremeonicnac</a></p>
+  </dialog>
+
+  <main>
+    <!-- ============================================================ HERO -->
+    <section class="hero" id="top" aria-label="NicNac Productions">
+      <picture>
+        <source media="(orientation: portrait)" srcset="media/poster-portrait.webp" type="image/webp" />
+        <img class="hero__poster" src="media/poster-1920.webp" width="1920" height="1080" fetchpriority="high"
+             alt="" />
+      </picture>
+      <canvas class="hero__gl" id="gl" aria-hidden="true"></canvas>
+      <div class="hero__shade" aria-hidden="true"></div>
+
+      <div class="hero__ui">
+        <p class="hero__index mono" aria-hidden="true">
+          <span>N°001</span><span>The All-Seeing</span><span data-clock>00:00:00</span>
+        </p>
+
+        <h1 class="hero__title">
+          <span class="visually-hidden">NicNac Productions — </span>
+          <span class="hero__word" aria-hidden="true">
+            <span class="hero__half"><span>N</span><span>I</span><span>C</span></span>
+            <span class="hero__half"><span>N</span><span>A</span><span>C</span></span>
+          </span>
+        </h1>
+
+        <div class="hero__row">
+          <p class="hero__tag"><em>What the eye sees,</em><br /><em>the record keeps.</em></p>
+          <p class="hero__meta mono">Beats · Songwriting · Mix<br />Hip-Hop &amp; R&amp;B — Est. 2018</p>
+          <button class="hero__play" type="button" data-play-first>
+            <span class="hero__play-icon"><svg aria-hidden="true"><use href="#i-play" /></svg></span>
+            <span class="hero__play-label"><span class="mono">Press play</span><strong>Enter the vault</strong></span>
+          </button>
+        </div>
+
+        <p class="hero__hint mono" aria-hidden="true"><span class="hero__hint-dot"></span>Hold anywhere to open the third eye</p>
+      </div>
+    </section>
+
+    <!-- ============================================================ MARQUEE -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track" data-marquee></div>
+    </div>
+
+    <!-- ============================================================ VAULT -->
+    <section class="vault" id="vault" aria-labelledby="vault-title">
+      <header class="section-head">
+        <p class="eyebrow mono"><span>01</span> The Vault</p>
+        <h2 class="section-title" id="vault-title">Eighteen beats.<br /><em>One eye.</em></h2>
+        <p class="section-lede">Every record here was built in the NicNac lab. Press play on anything. It keeps running while you look around, so you never have to leave the page.</p>
+      </header>
+
+      <ol class="tracks" data-tracks aria-label="Tracks"></ol>
+
+      <p class="vault__foot mono">
+        <a href="https://soundcloud.com/nicnackproductions" target="_blank" rel="noopener">
+          <svg aria-hidden="true"><use href="#i-sc" /></svg> Full catalog on SoundCloud
+        </a>
+      </p>
+      <div class="peek" aria-hidden="true"><img alt="" /></div>
+    </section>
+
+    <!-- ============================================================ ABOUT -->
+    <section class="about" id="about" aria-labelledby="about-title">
+      <div class="about__track" data-about-track>
+        <div class="about__pin">
+          <p class="eyebrow mono"><span>02</span> The Eye</p>
+          <h2 class="about__statement" id="about-title" data-words>
+            NicNac is a one-man production house for hip-hop and R&amp;B. Every record starts with something <b>real</b> — a night, a loss, a come-up — and ends as a track strong enough to <b>carry it.</b>
+          </h2>
+          <figure class="about__eye" aria-hidden="true">
+            <img src="media/about-iris.webp" width="1400" height="1750" alt="" loading="lazy" decoding="async" />
+          </figure>
+        </div>
+      </div>
+
+      <div class="about__grid">
+        <figure class="about__quote">
+          <blockquote>
+            <p>“It’s always been my outlet for stress… so why not do something you love to help take care of the ones you love?!”</p>
+          </blockquote>
+          <figcaption class="mono">— NicNac</figcaption>
+        </figure>
+        <div class="about__body">
+          <p>Warm chords. Drums that sit in the pocket. Space left for the vocal to breathe. No filler and no polish for polish’s sake. Just the true version of the song, built to hold weight.</p>
+          <dl class="about__facts">
+            <div><dt class="mono">Lane</dt><dd>Hip-Hop / R&amp;B</dd></div>
+            <div><dt class="mono">In the vault</dt><dd data-track-count>18 beats</dd></div>
+            <div><dt class="mono">Since</dt><dd>2018</dd></div>
+            <div><dt class="mono">Works</dt><dd>Remote, worldwide</dd></div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ SERVICES -->
+    <section class="services" id="services" aria-labelledby="services-title">
+      <header class="section-head">
+        <p class="eyebrow mono"><span>03</span> Services</p>
+        <h2 class="section-title" id="services-title">What gets<br /><em>built here.</em></h2>
+        <p class="section-lede">Book one piece of the process or the whole thing. Every service stands on its own or folds into a full record.</p>
+      </header>
+
+      <div class="svc" data-svc>
+        <article class="svc__card" tabindex="0">
+          <div class="svc__bg" style="background-image:url(media/svc-1.webp)" aria-hidden="true"></div>
+          <p class="svc__num mono">01</p>
+          <h3 class="svc__title">Production</h3>
+          <p class="svc__kicker mono">Beats · Instrumentals</p>
+          <div class="svc__more">
+            <p>Custom instrumentals built around your voice. Warm chords, atmospheric keys, and drums that leave room for the vocal. Production on top of beats you already have, too.</p>
+            <ul>
+              <li>Custom beats &amp; instrumentals</li>
+              <li>Melodic R&amp;B production</li>
+              <li>Hip-hop pocket &amp; drum programming</li>
+              <li>Arrangement &amp; song structure</li>
+            </ul>
+          </div>
+        </article>
+        <article class="svc__card" tabindex="0">
+          <div class="svc__bg" style="background-image:url(media/svc-2.webp)" aria-hidden="true"></div>
+          <p class="svc__num mono">02</p>
+          <h3 class="svc__title">Mix &amp; Finish</h3>
+          <p class="svc__kicker mono">Comping · Tuning · Mix</p>
+          <div class="svc__more">
+            <p>Vocal comping, tuning, and a mix that keeps the emotion up front. Smooth enough for R&amp;B ears, hard enough for hip-hop ones.</p>
+            <ul>
+              <li>Vocal comping &amp; tuning</li>
+              <li>Mixing &amp; balancing</li>
+              <li>Stem prep &amp; delivery</li>
+              <li>Revision rounds</li>
+            </ul>
+          </div>
+        </article>
+        <article class="svc__card" tabindex="0">
+          <div class="svc__bg" style="background-image:url(media/svc-3.webp)" aria-hidden="true"></div>
+          <p class="svc__num mono">03</p>
+          <h3 class="svc__title">Full Song</h3>
+          <p class="svc__kicker mono">Start → Finish</p>
+          <div class="svc__more">
+            <p>Bring a feeling, a voice memo, or nothing at all. Leave with a finished, structured record: intro, verses, hook, bridge. Ready to record or release.</p>
+            <ul>
+              <li>Concept &amp; theme development</li>
+              <li>Songwriting + production, end to end</li>
+              <li>Artist direction &amp; honest notes</li>
+            </ul>
+          </div>
+        </article>
+      </div>
+
+      <ol class="steps" aria-label="How a session works">
+        <li><span class="mono">I</span><strong>Send the spark</strong><p>A voice memo, a reference, half a hook. Whatever you’ve got.</p></li>
+        <li><span class="mono">II</span><strong>We build it</strong><p>Direct collaboration and honest notes, back and forth until it hits.</p></li>
+        <li><span class="mono">III</span><strong>It’s finished</strong><p>Revisions until the song is actually done, then stems and masters delivered.</p></li>
+      </ol>
+    </section>
+
+    <!-- ============================================================ BOOK -->
+    <section class="book" id="book" aria-labelledby="book-title">
+      <div class="book__head">
+        <p class="eyebrow mono"><span>04</span> Book</p>
+        <h2 class="book__title" id="book-title"><span>Pull up</span><span><em>to the</em> session.</span></h2>
+        <p class="section-lede">Tell me about the song, the deadline, and the reference points. You’ll hear back within 48 hours.</p>
+        <ul class="book__links">
+          <li><a href="https://www.instagram.com/supremeonicnac/" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-ig" /></svg><span><small class="mono">Instagram</small>@supremeonicnac</span></a></li>
+          <li><a href="https://soundcloud.com/nicnackproductions" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-sc" /></svg><span><small class="mono">SoundCloud</small>NicNackProductions</span></a></li>
+          <li data-email hidden><a href="#"><svg aria-hidden="true"><use href="#i-arrow" /></svg><span><small class="mono">Email</small><span data-email-text></span></span></a></li>
+        </ul>
+      </div>
+
+      <form class="form" name="booking" method="POST" data-netlify="true" netlify-honeypot="company" action="/?sent=1" novalidate>
+        <input type="hidden" name="form-name" value="booking" />
+        <p class="visually-hidden"><label>Leave this empty <input name="company" tabindex="-1" autocomplete="off" /></label></p>
+
+        <div class="field">
+          <input id="f-name" name="name" type="text" autocomplete="name" required placeholder=" " />
+          <label for="f-name">Your name / artist name</label>
+          <span class="field__err mono" id="f-name-err">Need a name to call you by.</span>
+        </div>
+        <div class="field">
+          <input id="f-email" name="email" type="email" autocomplete="email" required placeholder=" " aria-describedby="f-email-err" />
+          <label for="f-email">Email</label>
+          <span class="field__err mono" id="f-email-err">That email doesn’t look right.</span>
+        </div>
+
+        <fieldset class="chips">
+          <legend class="mono">What do you need?</legend>
+          <label><input type="radio" name="need" value="Songwriting" /><span>Songwriting</span></label>
+          <label><input type="radio" name="need" value="Production / beat" checked /><span>Production / beat</span></label>
+          <label><input type="radio" name="need" value="Mixing & finishing" /><span>Mix &amp; finish</span></label>
+          <label><input type="radio" name="need" value="Full song" /><span>Full song</span></label>
+          <label><input type="radio" name="need" value="Not sure yet" /><span>Not sure yet</span></label>
+        </fieldset>
+
+        <div class="field">
+          <input id="f-ref" name="reference" type="url" placeholder=" " inputmode="url" />
+          <label for="f-ref">Reference link <small>(optional)</small></label>
+          <span class="field__err mono">Paste a full link, starting with https://</span>
+        </div>
+        <div class="field field--area">
+          <textarea id="f-msg" name="message" rows="4" required placeholder=" "></textarea>
+          <label for="f-msg">Tell me about the song</label>
+          <span class="field__err mono">Give me a little to go on.</span>
+        </div>
+
+        <button class="form__send" type="submit">
+          <span class="form__send-label">Send it</span>
+          <svg aria-hidden="true"><use href="#i-arrow" /></svg>
+        </button>
+        <p class="form__status mono" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+  </main>
+
+  <!-- ============================================================ FOOTER -->
+  <footer class="foot">
+    <div class="foot__mega" aria-hidden="true">
+      <video class="foot__video" muted loop playsinline preload="none" data-foot-video></video>
+      <div class="foot__knock">NICNAC</div>
+    </div>
+    <div class="foot__row mono">
+      <p>© <span data-year>2026</span> NicNac Productions</p>
+      <p>SupremeONicNac</p>
+      <p><a href="#top">Back to the top ↑</a></p>
+    </div>
+  </footer>
+
+  <!-- ============================================================ PLAYER -->
+  <aside class="player" id="player" aria-label="Music player" data-state="idle">
+    <div class="player__inner">
+      <button class="player__art" type="button" aria-label="Show in the vault" data-p="locate">
+        <img alt="" width="56" height="56" />
+        <span class="player__eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+      </button>
+      <div class="player__info">
+        <p class="player__title" data-p="title">—</p>
+        <p class="player__by mono">NicNac Productions <span data-p="year"></span></p>
+      </div>
+      <div class="player__controls">
+        <button type="button" class="player__btn" aria-label="Previous track" data-p="prev"><svg><use href="#i-prev" /></svg></button>
+        <button type="button" class="player__btn player__btn--main" aria-label="Play" data-p="toggle"><svg><use href="#i-play" /></svg></button>
+        <button type="button" class="player__btn" aria-label="Next track" data-p="next"><svg><use href="#i-next" /></svg></button>
+      </div>
+      <div class="player__wave">
+        <span class="player__time mono" data-p="pos">0:00</span>
+        <div class="wave" role="slider" tabindex="0" aria-label="Seek" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0:00" data-p="wave">
+          <canvas></canvas>
+        </div>
+        <span class="player__time mono" data-p="dur">0:00</span>
+      </div>
+      <div class="player__extra">
+        <label class="player__vol">
+          <button type="button" class="player__btn player__btn--sm" aria-label="Mute" data-p="mute"><svg><use href="#i-vol" /></svg></button>
+          <input type="range" min="0" max="100" value="85" aria-label="Volume" data-p="vol" />
+        </label>
+        <button type="button" class="player__btn player__btn--sm" aria-label="Visualizer" data-p="viz"><svg><use href="#i-expand" /></svg></button>
+        <a class="player__sc" href="https://soundcloud.com/nicnackproductions" target="_blank" rel="noopener" data-p="sclink" aria-label="Open this track on SoundCloud"><svg aria-hidden="true"><use href="#i-sc" /></svg></a>
+      </div>
+    </div>
+    <div class="player__source" data-p="source" hidden>
+      <p class="mono">Your browser wants one tap on SoundCloud’s own player to start the audio. After that, everything plays from here.</p>
+    </div>
+    <div class="player__frame" data-p="frame"></div>
+  </aside>
+
+  <!-- fullscreen visualizer shell (reuses the hero canvas) -->
+  <div class="viz" id="viz" hidden>
+    <p class="viz__title" data-viz-title></p>
+    <button class="viz__close mono" type="button" data-p="viz-close">Close ✕</button>
+  </div>
+
+  <div class="cursor" aria-hidden="true"><span class="cursor__dot"></span><span class="cursor__ring"><span class="cursor__label"></span></span></div>
+  <div class="grain" aria-hidden="true"></div>
+</body>
+</html>
