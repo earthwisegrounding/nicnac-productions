@@ -280,6 +280,11 @@ em { font-family: var(--f-serif); font-style: italic; font-weight: 400; letter-s
 .hero__hint-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--iris); box-shadow: 0 0 12px var(--iris); animation: blink 1.6s steps(1) infinite; }
 @keyframes blink { 50% { opacity: 0.2; } }
 html.is-tripping .hero__hint { color: var(--iris-hi); }
+.hero__hint.is-keyed { color: var(--gold-hi); }
+.hero__hint.is-keyed .hero__hint-dot { background: var(--gold); box-shadow: 0 0 12px var(--gold); }
+.hero { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+.foot__egg { font: inherit; letter-spacing: inherit; text-transform: inherit; color: inherit; }
+.foot__egg:hover { color: var(--gold-hi); }
 
 /* ------------------------------------------------------------ marquee */
 .marquee {

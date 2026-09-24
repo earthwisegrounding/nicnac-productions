@@ -79,25 +79,105 @@ new IntersectionObserver(([e]) => {
 document.addEventListener('visibilitychange', () => { if (!document.hidden) hero?.setVisible(heroOnScreen || root.classList.contains('is-viz')); });
 
 // hold to open the third eye
+let eggHold = null;
 if (hero) {
   let holdTimer;
+  const trip = (on) => { hero.setHold(on); root.classList.toggle('is-tripping', on); };
   const start = (e) => {
     if (e.target.closest('a, button, input, .nav')) return;
-    if (e.pointerType === 'touch') {
-      holdTimer = setTimeout(() => { hero.setHold(true); root.classList.add('is-tripping'); }, 220);
-    } else {
-      hero.setHold(true); root.classList.add('is-tripping');
-    }
+    const go = () => { trip(true); eggHold?.(true, e.clientX, e.clientY); };
+    if (e.pointerType === 'touch') holdTimer = setTimeout(go, 220);
+    else go();
   };
-  const end = () => { clearTimeout(holdTimer); hero.setHold(false); root.classList.remove('is-tripping'); };
+  const end = () => { clearTimeout(holdTimer); trip(false); eggHold?.(false); };
   heroEl.addEventListener('pointerdown', start);
   addEventListener('pointerup', end);
   addEventListener('pointercancel', end);
   heroEl.addEventListener('contextmenu', (e) => e.preventDefault());
-  addEventListener('keydown', (e) => { if (e.key === 't' && !e.target.closest('input, textarea')) { hero.setHold(true); root.classList.add('is-tripping'); } });
-  addEventListener('keyup', (e) => { if (e.key === 't') end(); });
-  addEventListener('pointermove', (e) => { if (heroOnScreen || root.classList.contains('is-viz')) hero.pointer(e.clientX, e.clientY); }, { passive: true });
+  addEventListener('keydown', (e) => { if (e.key === 't' && !e.target.closest('input, textarea')) trip(true); });
+  addEventListener('keyup', (e) => { if (e.key === 't') trip(false); });
+  addEventListener('pointermove', (e) => {
+    if (heroOnScreen || root.classList.contains('is-viz')) hero.pointer(e.clientX, e.clientY);
+    eggHold?.move(e.clientX, e.clientY);
+  }, { passive: true });
 }
+
+// ------------------------------------------------------------------ ◬
+// Nothing to see here.
+const EGG = { art: 'media/eye/eye_1of1.webp', model: 'media/eye/eye_1of1.glb', hold: 10 };
+let eggMod = null;
+const eggLoad = () => (eggMod ||= import('./egg.js'));
+const openEgg = async () => {
+  const { reveal } = await eggLoad();
+  lenis?.stop();
+  reveal({ ...EGG, onClose: () => { lenis?.start(); eggState.open = false; } });
+};
+const eggState = { open: false };
+const keyed = () => player.playing && [...String(player.current?.id ?? '')].reverse().join('') === '258421215';
+if (hero) {
+  const st = { holding: false, x: 0, y: 0, charge: 0, running: false, warmed: false };
+  const onEye = () => {
+    const r = hero.canvas.getBoundingClientRect();
+    const [vw, vh] = hero.videoSize;
+    const s = Math.max(r.width / vw, r.height / vh);
+    return Math.hypot(st.x - (r.left + r.width / 2), st.y - (r.top + r.height / 2)) < 165 * s;
+  };
+  let last = 0;
+  const step = (now) => {
+    const dt = last ? Math.min((now - last) / 1000, 0.1) : 1 / 60;
+    last = now;
+    const on = st.holding && !eggState.open && keyed() && onEye();
+    st.charge = on ? st.charge + dt / EGG.hold : Math.max(0, st.charge - dt * 0.9);
+    if (st.charge > 0.2 && !st.warmed) {
+      st.warmed = true;
+      eggLoad();
+      fetch(EGG.model).catch(() => {});
+      new Image().src = EGG.art;
+    }
+    hero.setCharge(st.charge);
+    player.duck(1 - 0.6 * st.charge);
+    if (st.charge >= 1) {
+      st.charge = 0; st.holding = false; st.running = false; last = 0;
+      eggState.open = true;
+      hero.setHold(false); root.classList.remove('is-tripping');
+      navigator.vibrate?.([20, 40, 90]);
+      try { localStorage.setItem('nn-1of1', '1'); } catch {}
+      markFound();
+      openEgg().finally(() => setTimeout(() => { hero.setCharge(0); player.duck(1); }, 350)); // the drop
+      return;
+    }
+    if (st.charge > 0 || st.holding) requestAnimationFrame(step);
+    else { st.running = false; last = 0; player.duck(1); }
+  };
+  eggHold = (on, x, y) => {
+    st.holding = on;
+    if (on) { st.x = x; st.y = y; if (!st.running) { st.running = true; requestAnimationFrame(step); } }
+  };
+  eggHold.move = (x, y) => { st.x = x; st.y = y; };
+
+  // the only in-page tell, and only while the right record is spinning
+  const hint = $('.hero__hint');
+  const hintText = hint.lastChild;
+  const updateHint = () => {
+    const k = keyed();
+    hint.classList.toggle('is-keyed', k);
+    hintText.textContent = k ? 'Look it in the eye. Don’t blink.' : 'Hold anywhere to open the third eye';
+  };
+  player.addEventListener('state', updateHint);
+  player.addEventListener('track', updateHint);
+}
+function markFound() {
+  const p = $('.foot__row p:nth-child(2)');
+  if (!p || p.querySelector('button')) return;
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.className = 'foot__egg';
+  b.textContent = 'SupremeONicNac ◉';
+  b.addEventListener('click', () => { if (!eggState.open) { eggState.open = true; openEgg(); } });
+  p.replaceChildren(b);
+}
+try { if (localStorage.getItem('nn-1of1')) markFound(); } catch {}
+console.log('%c◬%c  What the eye sees, the record keeps.\n   the young ones know.', 'color:#d4a64a;font-size:20px', 'color:#86a0ff;font:12px ui-monospace,monospace');
 
 // hero timecode (24 fps, like the render)
 const clock = $('[data-clock]');

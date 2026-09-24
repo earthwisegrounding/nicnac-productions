@@ -21,7 +21,7 @@ uniform float uEyeOn;
 uniform vec2 uVideoSize;
 uniform vec2 uRes;
 uniform vec2 uMouse;         // -1..1, smoothed
-uniform float uTime, uHold, uEnergy, uKick, uScroll, uPlay;
+uniform float uTime, uHold, uEnergy, uKick, uScroll, uPlay, uCharge;
 
 float hash(vec2 p) { p = fract(p * vec2(443.897, 441.423)); p += dot(p, p.yx + 19.19); return fract((p.x + p.y) * p.x); }
 
@@ -58,11 +58,17 @@ void main() {
   float zoom = 1.0 + uScroll * uScroll * 2.2 + uKick * 0.045 + uHold * 0.08;
   p /= zoom;
 
+  // falling into the pupil (only ever driven by something very specific)
+  float c3 = uCharge * uCharge * uCharge;
+  p /= 1.0 + c3 * 9.0;
+  float sw = uCharge * uCharge * 2.6;
+  p = mat2(cos(sw), -sin(sw), sin(sw), cos(sw)) * p;
+
   // third eye: six-fold mirrored kaleidoscope + breathing spiral
   float h = smoothstep(0.0, 1.0, uHold);
   if (h > 0.001) {
     float r = length(p);
-    float a = atan(p.y, p.x) + uTime * 0.35 * h + r * 1.6 * h;
+    float a = atan(p.y, p.x) + uTime * 0.35 * h + r * 1.6 * h + uCharge * uCharge * 5.0;
     float seg = 6.2831853 / 6.0;
     float ak = abs(mod(a, seg) - seg * 0.5);
     vec2 k = vec2(cos(ak), sin(ak)) * r;
@@ -124,6 +130,7 @@ void main() {
   col = col / (1.0 + col * 0.12);
   col += (hash(uv * uRes + fract(uTime * 13.7) * 91.0) - 0.5) * 0.045;
   col *= 1.0 - uScroll * 0.65;
+  col = mix(col, vec3(0.82, 0.88, 1.0) * 1.35, smoothstep(0.8, 1.0, uCharge));
 
   outColor = vec4(col, 1.0);
 }`;
@@ -167,7 +174,7 @@ export class Hero {
 
     this.u = {};
     for (const n of ['uVideo', 'uEye0', 'uEye1', 'uEye2', 'uEye3', 'uEyeW', 'uEyeRect', 'uEyeOn', 'uVideoSize', 'uRes', 'uMouse',
-      'uTime', 'uHold', 'uEnergy', 'uKick', 'uScroll', 'uPlay']) this.u[n] = gl.getUniformLocation(prog, n);
+      'uTime', 'uHold', 'uEnergy', 'uKick', 'uScroll', 'uPlay', 'uCharge']) this.u[n] = gl.getUniformLocation(prog, n);
 
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
     this.texVideo = this.#tex(0, true);
@@ -181,6 +188,7 @@ export class Hero {
     this.hold = 0; this.holdTarget = 0;
     this.energy = 0; this.kick = 0; this.lastEnergy = 0;
     this.scroll = 0;
+    this.charge = 0;
     this.visible = true;
     this.frames = new Map();       // "r_c" -> ImageBitmap
     this.eyeCells = [];            // currently bound cell keys per unit
@@ -315,6 +323,7 @@ export class Hero {
   lookAt(clientX, clientY) { this.pointer(clientX, clientY); }
   setHold(on) { this.holdTarget = on ? 1 : 0; }
   setScroll(p) { this.scroll = clamp(p, 0, 1); }
+  setCharge(c) { this.charge = clamp(c, 0, 1); }
   setVisible(v) {
     this.visible = v;
     if (v) {
@@ -405,6 +414,7 @@ export class Hero {
     gl.uniform1f(u.uKick, this.kick);
     gl.uniform1f(u.uScroll, this.scroll);
     gl.uniform1f(u.uPlay, playing);
+    gl.uniform1f(u.uCharge, this.charge);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   }
 }

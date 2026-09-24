@@ -147,8 +147,13 @@ export class Player extends EventTarget {
     this.pos = ms; this.posAt = performance.now();
     this.widget.seekTo(ms);
   }
+  /** Scale the output (0..1) without touching the listener's own volume setting. */
+  duck(f) {
+    const v = Math.round((this.muted ? 0 : this.volume) * f);
+    if (v !== this.duckedTo) { this.duckedTo = v; this.widget?.setVolume(v); }
+  }
   setVolume(v) {
-    this.volume = v; this.muted = v === 0;
+    this.volume = v; this.muted = v === 0; this.duckedTo = v;
     this.widget?.setVolume(v);
     this.el.mute.querySelector('use').setAttribute('href', v === 0 ? '#i-mute' : '#i-vol');
   }
