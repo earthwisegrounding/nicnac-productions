@@ -1,6 +1,6 @@
 # NicNac Productions — website rebuild
 
-A from-scratch rebuild of nicnacproductions.store. Everything here is original: a 3D scene built in Blender from the NicNac logo, rendered in Cycles, and brought to life in the browser with WebGL. The site streams his SoundCloud catalogue through a custom in-page player.
+A from-scratch rebuild of the NicNac Productions site, now live at **https://nicnacproductions.com** (the old site was nicnacproductions.store). Everything here is original: a 3D scene built in Blender from the NicNac logo, rendered in Cycles, and brought to life in the browser with WebGL. The site streams his SoundCloud catalogue through a custom in-page player.
 
 ```
 nicnac/
@@ -36,12 +36,17 @@ npm run dev        # http://localhost:5173
 npm run build      # → site/dist
 ```
 
-## Preview deploy (GitHub Pages)
+## Live deploy (GitHub Pages → nicnacproductions.com)
 
-Every push to `main` builds `site/` and publishes it through `.github/workflows/deploy-pages.yml`:
-**https://earthwisegrounding.github.io/nicnac-productions/**
+Every push to `main` builds `site/` and publishes it through `.github/workflows/deploy-pages.yml`.
+The custom domain is set in the repo's Pages settings. DNS is at GoDaddy (ns05/ns06.domaincontrol.com):
 
-GitHub Pages can't receive form posts, so on that host the booking form points visitors to Instagram DMs. At launch on Netlify, switch the `canonical` / `og:url` / `og:image` URLs in `site/index.html` to `https://nicnacproductions.store/`.
+| Type  | Host  | Value |
+|-------|-------|-------|
+| A     | `@`   | 185.199.108.153 · 185.199.109.153 · 185.199.110.153 · 185.199.111.153 |
+| CNAME | `www` | `earthwisegrounding.github.io.` |
+
+GitHub Pages can't receive form posts, so on this host the booking form points visitors to Instagram DMs. To make the form deliver, either move hosting to Netlify (Netlify Forms is already wired up) or swap in a form service such as Formspree.
 
 ## Deploy (Netlify — the current host)
 
@@ -53,7 +58,7 @@ Netlify → Site → Forms → *booking* → **Form notifications → Email** �
 
 ## Things the client should know
 
-1. **The old booking email is dead.** `booking@nicnacproductions.com` is on an unregistered domain with no mail server, so every inquiry sent from the old site bounced. The new form delivers to Netlify (see above). If he wants an email address shown on the page, put a working one in `site/src/data/site.js`.
+1. **The old booking email never worked.** `booking@nicnacproductions.com` sat on an unregistered domain, so every inquiry from the old site bounced. The domain is registered now (2026-09-24) but still has no mailbox or MX records. Set up email on it, then put the address in `site/src/data/site.js`.
 2. **New beats.** After uploading to SoundCloud, run `npm run fetch:tracks` in `site/`, then rebuild and deploy. That refreshes the list, artwork and waveforms.
 3. **Playback** goes through SoundCloud's official widget, so plays count on his SoundCloud stats. iOS Safari sometimes wants one tap on SoundCloud's own play button before audio can start. The player detects this and shows the widget for that single tap.
 
