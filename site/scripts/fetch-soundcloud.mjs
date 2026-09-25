@@ -49,6 +49,8 @@ await mkdir(join(ROOT, 'src/data'), { recursive: true });
 const tracks = [];
 for (const t of list.collection) {
   if (SKIP.has(t.permalink) || t.sharing !== 'public') continue;
+  // Sold beats come off the site: mark the SoundCloud title "(sold)" and re-run this script.
+  if (/\bsold\b/i.test(t.title)) continue;
   const slug = t.permalink.replace(/-\d+$/, '');
   const art = t.artwork_url || user.avatar_url;
   const artFile = `art/${slug}.jpg`;
@@ -84,7 +86,6 @@ for (const t of list.collection) {
     url: t.permalink_url,
     duration: t.duration,
     year: Number(t.created_at.slice(0, 4)),
-    sold: /\bsold\b/i.test(t.title),
     typeBeat: (/type beat/i.exec(t.title) || [null])[0] ? t.title.replace(/.*?([\w ]+?) type beat.*/i, '$1').trim() : null,
     likes: t.likes_count,
     plays: t.playback_count,

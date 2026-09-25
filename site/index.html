@@ -131,6 +131,7 @@
     </a>
     <nav class="nav__links" aria-label="Primary">
       <a href="#vault" data-hover="Vault">Vault</a>
+      <a href="#licenses" data-hover="Licenses">Licenses</a>
       <a href="#about" data-hover="About">About</a>
       <a href="#services" data-hover="Services">Services</a>
     </nav>
@@ -144,9 +145,10 @@
     <button class="menu__close" type="button" aria-label="Close menu" data-menu-close><span></span><span></span></button>
     <nav aria-label="Mobile">
       <a href="#vault" data-menu-close><span class="mono">01</span>Vault</a>
-      <a href="#about" data-menu-close><span class="mono">02</span>About</a>
-      <a href="#services" data-menu-close><span class="mono">03</span>Services</a>
-      <a href="#book" data-menu-close><span class="mono">04</span>Book</a>
+      <a href="#licenses" data-menu-close><span class="mono">02</span>Licenses</a>
+      <a href="#about" data-menu-close><span class="mono">03</span>About</a>
+      <a href="#services" data-menu-close><span class="mono">04</span>Services</a>
+      <a href="#book" data-menu-close><span class="mono">05</span>Book</a>
     </nav>
     <p class="menu__foot mono"><a href="https://www.instagram.com/supremeonicnac/" rel="noopener" target="_blank">@supremeonicnac</a></p>
   </dialog>
@@ -198,8 +200,8 @@
     <section class="vault" id="vault" aria-labelledby="vault-title">
       <header class="section-head">
         <p class="eyebrow mono"><span>01</span> The Vault</p>
-        <h2 class="section-title" id="vault-title">Eighteen beats.<br /><em>One eye.</em></h2>
-        <p class="section-lede">Every record here was built in the NicNac lab. Press play on anything. It keeps running while you look around, so you never have to leave the page.</p>
+        <h2 class="section-title" id="vault-title">Sixteen beats.<br /><em>One eye.</em></h2>
+        <p class="section-lede">Every record here was built in the NicNac lab. Press play on anything. It keeps running while you look around. Hear the one? Every beat is ready to lease, from <span data-from-price>$30</span>.</p>
       </header>
 
       <ol class="tracks" data-tracks aria-label="Tracks"></ol>
@@ -212,11 +214,22 @@
       <div class="peek" aria-hidden="true"><img alt="" /></div>
     </section>
 
+    <!-- ============================================================ LICENSES -->
+    <section class="licenses" id="licenses" aria-labelledby="licenses-title">
+      <header class="section-head">
+        <p class="eyebrow mono"><span>02</span> Licenses</p>
+        <h2 class="section-title" id="licenses-title">Every beat.<br /><em>Three ways in.</em></h2>
+        <p class="section-lede">Same terms on every beat in the vault. Start with the MP3, go WAV for the full-quality file, or take the Trackout when the song is ready to go everywhere.</p>
+      </header>
+      <div class="tiers" data-tiers></div>
+      <p class="tiers__note mono">Questions about a license, or want something custom? <a href="#book">Get in touch</a>.</p>
+    </section>
+
     <!-- ============================================================ ABOUT -->
     <section class="about" id="about" aria-labelledby="about-title">
       <div class="about__track" data-about-track>
         <div class="about__pin">
-          <p class="eyebrow mono"><span>02</span> The Eye</p>
+          <p class="eyebrow mono"><span>03</span> The Eye</p>
           <h2 class="about__statement" id="about-title" data-words>
             NicNac is a one-man production house for hip-hop and R&amp;B. Every record starts with something <b>real</b> — a night, a loss, a come-up — and ends as a track strong enough to <b>carry it.</b>
           </h2>
@@ -248,7 +261,7 @@
     <!-- ============================================================ SERVICES -->
     <section class="services" id="services" aria-labelledby="services-title">
       <header class="section-head">
-        <p class="eyebrow mono"><span>03</span> Services</p>
+        <p class="eyebrow mono"><span>04</span> Services</p>
         <h2 class="section-title" id="services-title">What gets<br /><em>built here.</em></h2>
         <p class="section-lede">Book one piece of the process or the whole thing. Every service stands on its own or folds into a full record.</p>
       </header>
@@ -310,7 +323,7 @@
     <!-- ============================================================ BOOK -->
     <section class="book" id="book" aria-labelledby="book-title">
       <div class="book__head">
-        <p class="eyebrow mono"><span>04</span> Book</p>
+        <p class="eyebrow mono"><span>05</span> Book</p>
         <h2 class="book__title" id="book-title"><span>Pull up</span><span><em>to the</em> session.</span></h2>
         <p class="section-lede">Tell me about the song, the deadline, and the reference points. You’ll hear back within 48 hours.</p>
         <ul class="book__links">
@@ -337,12 +350,24 @@
 
         <fieldset class="chips">
           <legend class="mono">What do you need?</legend>
+          <label><input type="radio" name="need" value="License a beat" /><span>License a beat</span></label>
           <label><input type="radio" name="need" value="Songwriting" /><span>Songwriting</span></label>
           <label><input type="radio" name="need" value="Production / beat" checked /><span>Production / beat</span></label>
           <label><input type="radio" name="need" value="Mixing & finishing" /><span>Mix &amp; finish</span></label>
           <label><input type="radio" name="need" value="Full song" /><span>Full song</span></label>
           <label><input type="radio" name="need" value="Not sure yet" /><span>Not sure yet</span></label>
         </fieldset>
+
+        <div class="form__lic" data-form-lic hidden>
+          <div class="field field--select">
+            <select id="f-beat" name="beat" data-form-beat></select>
+            <label for="f-beat">Beat</label>
+          </div>
+          <div class="field field--select">
+            <select id="f-license" name="license" data-form-tier></select>
+            <label for="f-license">License</label>
+          </div>
+        </div>
 
         <div class="field">
           <input id="f-ref" name="reference" type="url" placeholder=" " inputmode="url" />
@@ -400,6 +425,9 @@
         </div>
         <span class="player__time mono" data-p="dur">0:00</span>
       </div>
+      <button type="button" class="player__lic mono" data-p="lic" aria-label="License this beat">
+        <span class="player__lic-full">License</span><span data-from-price>$30</span>+
+      </button>
       <div class="player__extra">
         <label class="player__vol">
           <button type="button" class="player__btn player__btn--sm" aria-label="Mute" data-p="mute"><svg><use href="#i-vol" /></svg></button>
@@ -414,6 +442,33 @@
     </div>
     <div class="player__frame" data-p="frame"></div>
   </aside>
+
+  <!-- ============================================================ LICENSE PANEL -->
+  <dialog class="lic" id="lic" aria-labelledby="lic-title">
+    <div class="lic__panel">
+      <button class="lic__close" type="button" aria-label="Close" data-lic-close><span></span><span></span></button>
+      <header class="lic__head">
+        <img class="lic__art" alt="" width="96" height="96" />
+        <div class="lic__who">
+          <p class="lic__eyebrow mono">License this beat</p>
+          <label class="lic__pick">
+            <span class="visually-hidden">Beat</span>
+            <select id="lic-title" data-lic-beat></select>
+          </label>
+          <button class="lic__play mono" type="button" data-lic-play><svg aria-hidden="true"><use href="#i-play" /></svg><span>Preview</span></button>
+        </div>
+      </header>
+      <fieldset class="lic__tiers" data-lic-tiers>
+        <legend class="visually-hidden">License</legend>
+      </fieldset>
+      <dl class="lic__terms" data-lic-terms></dl>
+      <div class="lic__cta">
+        <a class="lic__buy" data-lic-buy target="_blank" rel="noopener"></a>
+        <button class="lic__alt mono" type="button" data-lic-form>Or send a request</button>
+      </div>
+      <p class="lic__note mono" data-lic-note></p>
+    </div>
+  </dialog>
 
   <!-- fullscreen visualizer shell (reuses the hero canvas) -->
   <div class="viz" id="viz" hidden>

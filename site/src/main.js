@@ -8,6 +8,7 @@ import Lenis from 'lenis';
 import data from './data/tracks.json';
 import eyeMeta from './data/eye.json';
 import { site } from './data/site.js';
+import { licenses, termRows, fromPrice } from './data/licenses.js';
 import { Player, fmt } from './player.js';
 import { Hero } from './gl.js';
 
@@ -201,9 +202,7 @@ $('[data-play-first]').addEventListener('click', () => {
 const list = $('[data-tracks]');
 list.innerHTML = tracks
   .map((t, i) => {
-    const tags = [t.sold && '<span class="tag tag--sold">Sold</span>', favs.has(t.id) && '<span class="tag">Fan fave</span>']
-      .filter(Boolean)
-      .join('');
+    const tags = favs.has(t.id) ? '<span class="tag">Fan fave</span>' : '';
     return `<li class="track" data-i="${i}">
       <button class="track__btn" type="button" data-cursor="play" aria-label="Play ${t.title}">
         <span class="track__num mono">${String(i + 1).padStart(2, '0')}</span>
@@ -213,6 +212,7 @@ list.innerHTML = tracks
         <span class="track__dur mono">${fmt(t.duration)}</span>
         <span class="track__icon" aria-hidden="true"><svg class="i-play"><use href="#i-play"/></svg><svg class="i-pause"><use href="#i-pause"/></svg></span>
       </button>
+      <button class="track__lic mono" type="button" aria-label="License ${t.title}, from $${fromPrice}"><span class="track__lic-word">License</span> $${fromPrice}+</button>
       <div class="track__bar" aria-hidden="true"><i></i></div>
     </li>`;
   })
@@ -225,6 +225,7 @@ list.addEventListener('click', (e) => {
   const li = e.target.closest('.track');
   if (!li) return;
   const i = +li.dataset.i;
+  if (e.target.closest('.track__lic')) return openLic(i);
   if (i === player.index) player.toggle();
   else player.play(i);
 });
@@ -438,9 +439,125 @@ if (finePointer && !reduced) {
   curLoop();
 }
 
+// ------------------------------------------------------------------ licenses
+$$('[data-from-price]').forEach((el) => (el.textContent = `$${fromPrice}`));
+const termsHtml = (l) =>
+  termRows.map(([k, label]) => `<div${l.terms[k] ? '' : ' class="is-off"'}><dt class="mono">${label}</dt><dd>${l.terms[k] ?? 'Not included'}</dd></div>`).join('');
+$('[data-tiers]').innerHTML = licenses
+  .map((l) => `<article class="tier${l.badge ? ' tier--top' : ''}">
+    <header class="tier__head">
+      <p class="tier__files mono">${l.files}${l.badge ? `<span class="tier__badge">${l.badge}</span>` : ''}</p>
+      <h3 class="tier__name">${l.name}</h3>
+      <p class="tier__price"><span class="tier__cur">$</span>${l.price}</p>
+    </header>
+    <dl class="tier__terms">${termsHtml(l)}</dl>
+    <button class="tier__btn" type="button" data-lic-tier="${l.id}">Pick a beat <svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+  </article>`)
+  .join('');
+
+const lic = $('#lic');
+const licBeat = $('[data-lic-beat]', lic);
+const licTiers = $('[data-lic-tiers]', lic);
+const licBuy = $('[data-lic-buy]', lic);
+const licNote = $('[data-lic-note]', lic);
+const licState = { beat: 0, tier: licenses[0].id };
+const licSizer = Object.assign(document.createElement('span'), { className: 'lic__sizer' });
+licBeat.after(licSizer);
+licBeat.innerHTML = tracks.map((t, i) => `<option value="${i}">${t.title}</option>`).join('');
+licTiers.insertAdjacentHTML('beforeend', licenses
+  .map((l) => `<label class="lic__tier">
+    <input type="radio" name="lic-tier" value="${l.id}" />
+    <span class="lic__tier-body"><span class="lic__tier-name">${l.name}</span><span class="lic__tier-files mono">${l.files}${l.badge ? ` · ${l.badge}` : ''}</span></span>
+    <span class="lic__tier-price">$${l.price}</span>
+  </label>`)
+  .join(''));
+const licRequest = () => {
+  const t = tracks[licState.beat], l = licenses.find((x) => x.id === licState.tier);
+  return { t, l, text: `Hi Nick! I'd like to license "${t.title}" (${l.name}, $${l.price}) from nicnacproductions.com.` };
+};
+const renderLic = () => {
+  const { t, l, text } = licRequest();
+  licBeat.value = licState.beat;
+  licSizer.textContent = t.title;              // a <select> is as wide as its longest option;
+  const w = licSizer.offsetWidth;              // size it to the chosen one instead
+  licBeat.style.width = w ? `${w + 30}px` : '';
+  $('.lic__art', lic).src = t.art;
+  $(`input[value="${l.id}"]`, licTiers).checked = true;
+  $('[data-lic-terms]', lic).innerHTML = termsHtml(l);
+  if (l.checkout) {
+    const u = new URL(l.checkout);
+    u.searchParams.set('client_reference_id', t.slug.replace(/[^\w-]/g, '-'));
+    licBuy.href = u;
+    licBuy.innerHTML = `Buy the ${l.name} · $${l.price}`;
+    licBuy.dataset.mode = 'buy';
+    licNote.textContent = 'Opens secure checkout in a new tab.';
+  } else {
+    licBuy.href = site.instagramDM;
+    licBuy.innerHTML = `DM to license · $${l.price}`;
+    licBuy.dataset.mode = 'dm';
+    licNote.textContent = `Opens a DM with @supremeonicnac. We copy this for you to paste: “${text}”`;
+  }
+  const on = player.index === licState.beat && player.playing;
+  $('[data-lic-play] span', lic).textContent = on ? 'Playing' : 'Preview';
+  $('[data-lic-play] use', lic).setAttribute('href', on ? '#i-pause' : '#i-play');
+};
+function openLic(i = player.index >= 0 ? player.index : 0, tier) {
+  licState.beat = i;
+  if (tier) licState.tier = tier;
+  lic.showModal();   // open first: nothing inside a closed dialog can be measured
+  renderLic();
+  lenis?.stop();
+}
+lic.addEventListener('close', () => { if (!root.classList.contains('is-viz')) lenis?.start(); });
+lic.addEventListener('click', (e) => { if (e.target === lic) lic.close(); });
+$('[data-lic-close]', lic).addEventListener('click', () => lic.close());
+licBeat.addEventListener('change', () => { licState.beat = +licBeat.value; renderLic(); });
+licTiers.addEventListener('change', (e) => { licState.tier = e.target.value; renderLic(); });
+$('[data-lic-play]', lic).addEventListener('click', () => {
+  if (player.index === licState.beat) player.toggle();
+  else player.play(licState.beat);
+});
+licBuy.addEventListener('click', () => {
+  if (licBuy.dataset.mode !== 'dm') return;
+  navigator.clipboard?.writeText(licRequest().text).then(
+    () => (licNote.textContent = 'Copied. Paste it into the DM and send.'),
+    () => {},
+  );
+});
+$('[data-lic-form]', lic).addEventListener('click', () => {
+  const { t, l } = licRequest();
+  lic.close();
+  form.elements.need.value = 'License a beat';
+  syncNeed();
+  formBeat.value = t.title;
+  formTier.value = `${l.name} ($${l.price})`;
+  const msg = $('#f-msg');
+  if (!msg.value.trim()) msg.value = `License request: ${t.title}, ${l.name} ($${l.price}).`;
+  scrollTo('#book');
+  setTimeout(() => $('#f-name').focus({ preventScroll: true }), 1200);
+});
+player.addEventListener('state', () => lic.open && renderLic());
+$('[data-tiers]').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-lic-tier]');
+  if (b) openLic(undefined, b.dataset.licTier);
+});
+$('[data-p="lic"]').addEventListener('click', () => openLic(player.index));
+
 // ------------------------------------------------------------------ booking form (Netlify Forms)
 const form = $('form[name="booking"]');
 const status = $('.form__status', form);
+const formLic = $('[data-form-lic]', form);
+const formBeat = $('[data-form-beat]', form);
+const formTier = $('[data-form-tier]', form);
+formBeat.innerHTML = tracks.map((t) => `<option>${t.title}</option>`).join('');
+formTier.innerHTML = licenses.map((l) => `<option value="${l.name} ($${l.price})">${l.name} · $${l.price}</option>`).join('');
+function syncNeed() {
+  const on = form.elements.need.value === 'License a beat';
+  formLic.hidden = !on;
+  formBeat.disabled = formTier.disabled = !on;   // disabled fields aren't submitted
+}
+form.addEventListener('change', (e) => { if (e.target.name === 'need') syncNeed(); });
+syncNeed();
 if (site.email) {
   const li = $('[data-email]');
   li.hidden = false;
@@ -460,9 +577,17 @@ form.addEventListener('submit', async (e) => {
   }
   const btn = $('.form__send', form);
   if (!/netlify|nicnacproductions\.store|localhost/.test(location.hostname)) {
-    // static preview hosts (e.g. GitHub Pages) can't receive form posts
-    status.innerHTML = `Online booking switches on at launch. For now, DM <a href="${site.instagram}" target="_blank" rel="noopener">@supremeonicnac</a> on Instagram.`;
-    status.className = 'form__status mono is-err';
+    // static hosts (GitHub Pages) can't receive form posts: hand the message to Instagram instead
+    const d = new FormData(form);
+    const text = [
+      `Hi Nick, it's ${d.get('name')} (${d.get('email')}).`,
+      d.get('need') === 'License a beat' ? `I'd like to license "${d.get('beat')}", ${d.get('license')}.` : `Looking for: ${d.get('need')}.`,
+      d.get('message'),
+      d.get('reference'),
+    ].filter(Boolean).join('\n');
+    const copied = await navigator.clipboard?.writeText(text).then(() => true, () => false);
+    status.innerHTML = `${copied ? 'Your message is copied. ' : ''}<a href="${site.instagramDM}" target="_blank" rel="noopener">Send it to @supremeonicnac on Instagram →</a>`;
+    status.className = 'form__status mono is-ok';
     return;
   }
   btn.disabled = true;

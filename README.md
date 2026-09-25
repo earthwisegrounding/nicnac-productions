@@ -60,7 +60,10 @@ Netlify → Site → Forms → *booking* → **Form notifications → Email** �
 
 1. **The old booking email never worked.** `booking@nicnacproductions.com` sat on an unregistered domain, so every inquiry from the old site bounced. The domain is registered now (2026-09-24) but still has no mailbox or MX records. Set up email on it, then put the address in `site/src/data/site.js`.
 2. **New beats.** After uploading to SoundCloud, run `npm run fetch:tracks` in `site/`, then rebuild and deploy. That refreshes the list, artwork and waveforms.
-3. **Playback** goes through SoundCloud's official widget, so plays count on his SoundCloud stats. iOS Safari sometimes wants one tap on SoundCloud's own play button before audio can start. The player detects this and shows the widget for that single tap.
+3. **Sold a beat?** Add "(sold)" to its SoundCloud title and re-run `npm run fetch:tracks`. Sold beats drop off the site automatically.
+4. **Prices and lease terms** live in `site/src/data/licenses.js` (from Nick's sheet: MP3 $30, WAV $60, Trackout $120, same terms on every beat). Change a number there and it updates everywhere: the Licenses section, every "License" button, and the per-beat panel.
+5. **Taking payment.** Right now "License" opens an Instagram DM to @supremeonicnac with the request pre-written and copied. To sell directly, create one payment link per tier (for example Stripe Payment Links for $30, $60, $120) and paste them into the `checkout` fields in `licenses.js`. The buttons become "Buy", and each order carries the beat as `client_reference_id`.
+6. **Playback** goes through SoundCloud's official widget, so plays count on his SoundCloud stats. iOS Safari sometimes wants one tap on SoundCloud's own play button before audio can start. The player detects this and shows the widget for that single tap.
 
 ## The experience
 
@@ -69,7 +72,8 @@ Netlify → Site → Forms → *booking* → **Form notifications → Email** �
 - **The eye watches you.** 187 Cycles-rendered gaze positions are composited into the video in real time, following the cursor (or wandering on its own).
 - **Audio-reactive:** while a track plays, the tunnel speeds up and the bloom, warp streaks, lens and chromatic aberration pulse with that track's real loudness envelope.
 - **Hold anywhere (or press T):** *open the third eye.* A six-fold kaleidoscope, holographic thin-film colour, and a 3× time warp.
-- **The Vault:** all 18 beats. Hover to reveal the art in a triangle, click to play. A persistent dock gives real waveforms, seeking, and a full-screen visualizer.
+- **The Vault:** all 16 beats that are for sale. Hover to reveal the art in a triangle, click to play. A persistent dock gives real waveforms, seeking, and a full-screen visualizer.
+- **Licenses:** three lease tiers side by side. Every track row and the player dock have a "License" button that opens a per-beat panel: pick a tier, preview the beat, then DM (or check out, once payment links are set).
 - Built mobile-first for Instagram traffic. It honours reduced-motion, works by keyboard, and adapts its resolution on weaker GPUs.
 
 ## Re-rendering the 3D
