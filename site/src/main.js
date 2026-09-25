@@ -229,6 +229,26 @@ list.addEventListener('click', (e) => {
   else player.play(i);
 });
 
+// ------------------------------------------------------------------ neon: TRACKS
+// One word, built as layered tubes: unlit glass, two blooms, the tube, a white-hot core, plus a
+// reflection, a lit floor edge and light spilling onto the list. Ignites once when seen; pulses to the music.
+const neon = $('[data-neon]');
+let neonSeen = false;
+{
+  const word = $('.neon__word', neon);
+  const label = word.textContent.trim();
+  const letters = [...label.toUpperCase()].map((c) => `<span>${c}</span>`).join('');
+  const layer = (cls) => `<span class="neon__layer ${cls}">${letters}</span>`;
+  word.innerHTML = `<span class="visually-hidden">${label}</span><span class="neon__sign" aria-hidden="true"><span class="neon__wash"></span>${
+    layer('neon__glass') + layer('neon__bloom2') + layer('neon__bloom1') + layer('neon__tube') + layer('neon__core')
+  }<span class="neon__reflect">${layer('neon__bloom1') + layer('neon__tube')}</span></span>`;
+  neon.insertAdjacentHTML('beforeend', '<span class="neon__floor" aria-hidden="true"></span><span class="neon__spill" aria-hidden="true"></span>');
+  new IntersectionObserver(([e]) => {
+    neonSeen = e.isIntersecting;
+    if (e.isIntersecting) neon.classList.add('is-on');
+  }, { threshold: 0.4 }).observe(neon);
+}
+
 // artwork peek follows the cursor, clipped to a triangle
 const peek = $('.peek');
 const peekImg = $('img', peek);
@@ -299,7 +319,16 @@ player.addEventListener('locate', () => {
 // progress: waveform + row bar + time, one rAF
 const posEl = $('[data-p="pos"]'), waveEl = $('[data-p="wave"]');
 let lastSec = -1;
+let neonE = 0;
 const progressLoop = () => {
+  if (neonSeen) {
+    const e = player.playing ? player.energy() : 0;
+    const next = neonE + (e - neonE) * 0.25;
+    if (Math.abs(next - neonE) > 0.004 || (e === 0 && neonE !== 0)) {
+      neonE = e === 0 && next < 0.01 ? 0 : next;
+      neon.style.setProperty('--e', neonE.toFixed(3));
+    }
+  }
   if (player.index >= 0) {
     const pos = player.position(), p = player.dur ? pos / player.dur : 0;
     player.wave.draw(p);
@@ -400,7 +429,7 @@ $$('[data-menu-close]', menu).forEach((b) => b.addEventListener('click', (e) => 
 }));
 
 // ------------------------------------------------------------------ reveals
-$$('.section-head, .svc, .steps li, .about__grid > *, .book__head, .form, .vault__foot').forEach((el) => el.classList.add('reveal'));
+$$('.section-head, .svc, .steps li, .about__grid > *, .about__coda, .book__head, .form, .vault__foot').forEach((el) => el.classList.add('reveal'));
 if (!CSS.supports('(animation-timeline: view()) and (animation-range: entry)') && !reduced) {
   root.classList.add('no-sda');
   const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -10% 0px' });

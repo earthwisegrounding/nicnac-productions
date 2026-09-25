@@ -320,12 +320,6 @@ section { position: relative; }
   line-height: 0.84; letter-spacing: -0.01em;
 }
 .section-title em { text-transform: none; font-size: 1.06em; letter-spacing: -0.03em; color: var(--gold-hi); }
-/* full-width statement heading (the vault): one line each on desktop */
-.section-title--wide { grid-column: 1 / -1; }
-.section-title--wide .st-line { display: block; }
-.section-title--wide em { font-size: 1.02em; line-height: 0.95; }
-@media (min-width: 821px) { .section-title--wide + .section-lede { grid-column: 2; } }
-
 /* "Erasure" arrives rubbed out, then refuses to go */
 .erase { display: inline-block; }
 @keyframes unerase {
@@ -338,7 +332,7 @@ section { position: relative; }
     .erase { animation: unerase linear both; animation-timeline: view(); animation-range: entry 35% cover 42%; }
   }
   html.no-sda .erase { transition: opacity 1.4s 0.5s, filter 1.4s 0.5s, letter-spacing 1.4s 0.5s var(--ease-out); }
-  html.no-sda .section-head:not(.is-in) .erase { opacity: 0.1; filter: blur(14px); letter-spacing: 0.12em; }
+  html.no-sda .reveal:not(.is-in) .erase { opacity: 0.1; filter: blur(14px); letter-spacing: 0.12em; }
 }
 .section-lede { color: var(--bone-2); max-width: 44ch; font-size: clamp(16px, 1.2vw, 19px); justify-self: end; }
 
@@ -355,6 +349,85 @@ section { position: relative; }
 }
 html.no-sda .reveal { opacity: 0; transform: translateY(48px); transition: opacity 0.9s var(--ease-out), transform 0.9s var(--ease-out); }
 html.no-sda .reveal.is-in { opacity: 1; transform: none; }
+
+/* ------------------------------------------------------------ neon: TRACKS */
+@property --lit { syntax: '<number>'; inherits: true; initial-value: 0; }
+@property --e { syntax: '<number>'; inherits: true; initial-value: 0; }
+
+.section-head--vault { padding-bottom: 0; }
+.section-head--vault .eyebrow { grid-column: 1; align-self: end; }
+
+.neon {
+  --neon: #3d6aff;          /* the eye's cobalt, as gas */
+  --neon-tube: #b3c5ff;
+  --neon-core: #f4f7ff;
+  --lit: 0; --e: 0;
+  position: relative; display: grid; justify-items: center;
+  padding: clamp(28px, 4.5vw, 72px) var(--gutter) clamp(36px, 4vw, 64px);
+}
+.neon__word {
+  margin: 0; font-size: clamp(92px, 22vw, 340px); font-weight: 800; font-stretch: 62%;
+  text-transform: uppercase; line-height: 0.8; letter-spacing: 0.06em;
+}
+.neon__sign { position: relative; display: inline-block; padding-left: 0.06em; }
+.neon__layer {
+  display: block; white-space: nowrap; color: transparent;
+  -webkit-text-stroke: var(--w) var(--c);
+}
+.neon__layer:not(.neon__glass) { position: absolute; inset: 0 0 0 0.06em; will-change: opacity; }
+.neon__glass { --w: max(1.6px, 0.01em); --c: rgb(170 190 255 / 0.13); }             /* unlit tube */
+.neon__bloom2 { --w: max(7px, 0.055em); --c: var(--neon); filter: blur(max(20px, 0.13em)); opacity: calc(var(--lit) * (0.85 + var(--e) * 0.35)); }
+.neon__bloom1 { --w: max(3px, 0.022em); --c: var(--neon); filter: blur(max(5px, 0.028em)); opacity: calc(var(--lit) * (0.85 + var(--e) * 0.15)); }
+.neon__tube { --w: max(1.8px, 0.011em); --c: var(--neon-tube); opacity: var(--lit); }
+.neon__core { --w: max(0.7px, 0.004em); --c: var(--neon-core); opacity: calc(var(--lit) * 0.9); }
+.neon__wash {                                                                        /* the wall behind it, lit */
+  position: absolute; inset: -45% -20%; pointer-events: none;
+  background: radial-gradient(closest-side, rgb(61 106 255 / 0.28), transparent);
+  opacity: calc(var(--lit) * (0.75 + var(--e) * 0.6));
+}
+.neon__reflect {                                                                     /* on the surface below */
+  position: absolute; left: 0; right: 0; top: 100%; height: 100%; pointer-events: none;
+  transform: scaleY(-1); filter: blur(2px); opacity: calc(var(--lit) * 0.26);
+  -webkit-mask-image: linear-gradient(to top, #000, transparent 42%); mask-image: linear-gradient(to top, #000, transparent 42%);
+}
+.neon__reflect .neon__layer { position: absolute; inset: 0 0 0 0.06em; opacity: 1; }
+.neon__floor {                                                                       /* where the light hits the list's edge */
+  position: absolute; left: 6%; right: 6%; bottom: -1px; height: 1px; pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgb(150 175 255 / 0.95) 50%, transparent);
+  box-shadow: 0 0 22px 3px rgb(61 106 255 / 0.5);
+  opacity: calc(var(--lit) * (0.8 + var(--e) * 0.4));
+}
+.neon__spill {                                                                       /* the light pouring onto the tracks */
+  position: absolute; left: 0; right: 0; top: 100%; height: clamp(260px, 40vw, 600px);
+  pointer-events: none; z-index: 2; mix-blend-mode: screen;
+  background: radial-gradient(58% 100% at 50% 0%, rgb(61 106 255 / 0.4), rgb(61 106 255 / 0.1) 45%, transparent 76%);
+  opacity: calc(var(--lit) * (0.85 + var(--e) * 0.5));
+}
+
+/* ignition: abrupt, like gas catching */
+.neon.is-on { animation: ignite 1.9s step-end forwards; }
+@keyframes ignite {
+  0% { --lit: 0; } 6% { --lit: 0.85; } 9% { --lit: 0.05; } 15% { --lit: 0.95; } 18% { --lit: 0.2; }
+  26% { --lit: 1; } 30% { --lit: 0.45; } 34% { --lit: 1; } 100% { --lit: 1; }
+}
+/* the K has a loose electrode */
+@media (prefers-reduced-motion: no-preference) {
+  .neon.is-on .neon__layer:not(.neon__glass) > span:nth-child(5) { animation: sputter 9s 4s infinite step-end; }
+}
+@keyframes sputter {
+  0%, 88% { opacity: 1; } 89% { opacity: 0.15; } 90% { opacity: 1; } 91.5% { opacity: 0.3; } 92% { opacity: 0.9; } 93% { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .neon.is-on { animation: none; --lit: 1; }
+}
+
+/* the About coda */
+.about__coda {
+  margin: clamp(80px, 10vw, 160px) 0 0; padding-top: clamp(40px, 5vw, 72px); border-top: 1px solid var(--line);
+  font-size: clamp(56px, 8.6vw, 164px); font-weight: 850; font-stretch: 62%; text-transform: uppercase;
+  line-height: 0.84; letter-spacing: -0.01em;
+}
+.about__coda em { text-transform: none; font-size: 1.02em; line-height: 0.95; letter-spacing: -0.03em; color: var(--gold-hi); }
 
 /* ------------------------------------------------------------ vault */
 .vault { padding-bottom: clamp(80px, 10vw, 160px); }
