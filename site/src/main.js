@@ -218,7 +218,6 @@ list.innerHTML = tracks
   })
   .join('');
 $('[data-track-count]').textContent = `${tracks.length} beats`;
-$('#vault-title').innerHTML = `${numberWord(tracks.length)} beats.<br /><em>One eye.</em>`;
 
 const rows = $$('.track', list);
 list.addEventListener('click', (e) => {
@@ -670,10 +669,4 @@ if (seen || reduced) {
       setTimeout(reveal, 900);
     }),
   );
-}
-
-function numberWord(n) {
-  const w = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen',
-    'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen', 'Twenty'];
-  return w[n] || String(n);
 }
