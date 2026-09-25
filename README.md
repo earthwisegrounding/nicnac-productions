@@ -76,6 +76,19 @@ Netlify → Site → Forms → *booking* → **Form notifications → Email** �
 - **Licenses:** three lease tiers side by side. Every track row and the player dock have a "License" button that opens a per-beat panel: pick a tier, preview the beat, then DM (or check out, once payment links are set).
 - Built mobile-first for Instagram traffic. It honours reduced-motion, works by keyboard, and adapts its resolution on weaker GPUs.
 
+## The TRACKS neon sign
+
+`site/public/media/tracks-neon*.webp` come from a photo of a neon sign on black
+(`brand/tracks-neon-source.jpg`), turned into a transparent image that composites like light:
+
+```bash
+cd brand
+uv run --with pillow --with numpy python neon_to_alpha.py tracks-neon-source.jpg ../site/public/media/tracks-neon.webp scale=2 q=82
+uv run --with pillow --with numpy python neon_to_alpha.py tracks-neon-source.jpg ../site/public/media/tracks-neon-1x.webp scale=1 q=86
+# the sputtering K: its glow footprint + complement (x-range = the K, as fractions of the image width)
+uv run --with pillow --with numpy python neon_letter_mask.py ../site/public/media/tracks-neon.webp ../site/public/media/tracks-neon-k 0.648 0.786
+```
+
 ## Re-rendering the 3D
 
 ```bash

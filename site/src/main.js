@@ -230,24 +230,13 @@ list.addEventListener('click', (e) => {
 });
 
 // ------------------------------------------------------------------ neon: TRACKS
-// One word, built as layered tubes: unlit glass, two blooms, the tube, a white-hot core, plus a
-// reflection, a lit floor edge and light spilling onto the list. Ignites once when seen; pulses to the music.
+// The sign ignites once when it comes into view; while music plays its glow follows the track.
 const neon = $('[data-neon]');
 let neonSeen = false;
-{
-  const word = $('.neon__word', neon);
-  const label = word.textContent.trim();
-  const letters = [...label.toUpperCase()].map((c) => `<span>${c}</span>`).join('');
-  const layer = (cls) => `<span class="neon__layer ${cls}">${letters}</span>`;
-  word.innerHTML = `<span class="visually-hidden">${label}</span><span class="neon__sign" aria-hidden="true"><span class="neon__wash"></span>${
-    layer('neon__glass') + layer('neon__bloom2') + layer('neon__bloom1') + layer('neon__tube') + layer('neon__core')
-  }<span class="neon__reflect">${layer('neon__bloom1') + layer('neon__tube')}</span></span>`;
-  neon.insertAdjacentHTML('beforeend', '<span class="neon__floor" aria-hidden="true"></span><span class="neon__spill" aria-hidden="true"></span>');
-  new IntersectionObserver(([e]) => {
-    neonSeen = e.isIntersecting;
-    if (e.isIntersecting) neon.classList.add('is-on');
-  }, { threshold: 0.4 }).observe(neon);
-}
+new IntersectionObserver(([e]) => {
+  neonSeen = e.isIntersecting;
+  if (e.isIntersecting) neon.classList.add('is-on');
+}, { threshold: 0.4 }).observe(neon);
 
 // artwork peek follows the cursor, clipped to a triangle
 const peek = $('.peek');
